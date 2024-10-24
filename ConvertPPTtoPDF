@@ -1,0 +1,40 @@
+import os
+import win32com.client
+
+def PPTtoPDF(file_name):
+    input_path = f"C:\\Users\\LENOVO\\Downloads\\{file_name}.pptx"
+    output_path = input_path.replace(".pptx", ".pdf")
+    
+    if not os.path.exists(input_path):
+        print("File not found. Please ensure the file is in the Downloads folder.")
+        return
+
+    if os.path.exists(output_path):
+        output_path = output_path.replace(".pdf", "(1).pdf")
+
+    try:
+        # Create a PowerPoint application object
+        powerpoint = win32com.client.Dispatch("PowerPoint.Application")
+        
+        # Open the PowerPoint presentation (0 means ReadOnly)
+        presentation = powerpoint.Presentations.Open(input_path, WithWindow=False)
+        
+        # Save the presentation as PDF (32 is the format type for PDFs)
+        presentation.SaveAs(output_path, 32)
+        
+        # Close the presentation
+        presentation.Close()
+        
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
+    finally:
+        # Quit PowerPoint
+        powerpoint.Quit()
+    
+    print(f"Conversion complete. PDF saved as {output_path}")
+
+file_name = input("Enter the PPT file name (without extension): ")
+PPTtoPDF(file_name)  
+
+input("Press Enter to exit...")
